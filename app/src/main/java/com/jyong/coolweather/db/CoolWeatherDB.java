@@ -40,6 +40,10 @@ public class CoolWeatherDB {
         return coolWeatherDB;
     }
 
+    public static boolean deleteDB(Context context) {
+        return context.deleteDatabase(DB_NAME);
+    }
+
     /**
      * 保存province对象到数据库
      *
@@ -52,6 +56,10 @@ public class CoolWeatherDB {
             values.put("province_code", province.getProvinceCode());
             db.insert("Province", null, values);
         }
+    }
+
+    public void deleteAllProvince() {
+        db.delete("Province", null, null);
     }
 
     /**
@@ -104,7 +112,7 @@ public class CoolWeatherDB {
         if (cursor.moveToFirst()) {
             do {
                 City city = new City();
-                city.setId(cursor.getInt(cursor.getColumnIndex("city_id")));
+                city.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 city.setCityName(cursor.getString(cursor.getColumnIndex("city_name")));
                 city.setCityCode(cursor.getString(cursor.getColumnIndex("city_code")));
                 city.setProvinceID(provinceID);
@@ -141,17 +149,17 @@ public class CoolWeatherDB {
     public List<County> loadCounties(int cityID) {
         List<County> list = new ArrayList<County>();
         Cursor cursor = db.query("County", null, "city_id = ?", new String[]{String.valueOf(cityID)}, null, null, null);
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             do {
                 County county = new County();
-                county.setId(cursor.getInt(cursor.getColumnIndex("county_id")));
+                county.setId(cursor.getInt(cursor.getColumnIndex("id")));
                 county.setCountyName(cursor.getString(cursor.getColumnIndex("county_name")));
                 county.setCountyCode(cursor.getString(cursor.getColumnIndex("county_code")));
                 county.setCityID(cityID);
                 list.add(county);
-            } while(cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
-        if (cursor != null){
+        if (cursor != null) {
             cursor.close();
         }
         return list;
